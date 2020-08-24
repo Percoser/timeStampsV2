@@ -11,6 +11,7 @@
        <HBox prefHeight="75.0" prefWidth="581.0">
           <children>
              <JFXButton fx:id="createNewButt" defaultButton="true" text="ADD NEW TASK" textAlignment="CENTER" underline="true" />
+            <JFXButton fx:id="exportButt" defaultButton="true" text="EXPORT " textAlignment="CENTER" underline="true" />
           </children>
        </HBox>
    

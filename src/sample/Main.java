@@ -19,6 +19,9 @@ public class Main extends Application {
         ScrollPane sp = new ScrollPane();
         sp.setContent(mainPane);
         Scene mainScene = new Scene(sp, 1200, 600);
+        mainScene.getStylesheets().add(Controller.class.getResource("DarkBlueTheme.css").toExternalForm());
+        this.primaryStage.setTitle("TimeStamps_v2");
+
         this.primaryStage.setScene(mainScene);
 
         this.primaryStage.show();

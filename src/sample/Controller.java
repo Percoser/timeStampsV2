@@ -11,6 +11,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.Format;
@@ -21,6 +24,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+    public JFXButton exportButt;
     private int column = 0;
     private int row = 0;
 
@@ -36,9 +40,27 @@ public class Controller implements Initializable {
 
     }
 
+    public void exportFile() throws FileNotFoundException {
+        Format formatter = new SimpleDateFormat("EddMMMyyyyHHmmss");
+        Date date = new Date();
+        String timestamp = formatter.format(date);
+        File file = new File("C:\\Users\\Eric\\Desktop\\TIMESHEETS\\"+timestamp+"TimesheetExport.txt");
+        PrintWriter output = new PrintWriter(file);
+        if(file.exists()) { //if the file exists
+            ObservableList<String> items = FXCollections.observableArrayList(listView1.getItems());
+            for(int i=0; i<items.size(); i++){
+                output.println(items.get(i));
+            }
+            output.close();
+        }
+        if(!file.exists()) { //if file doesn't exist
+            System.out.println("Error creating file");
+        }
+    }
+
     public void createNewButton(String name){
             JFXButton butt0 = new JFXButton(name);
-            butt0.setText(name);
+            butt0.setText("Start: "+name);
             butt0.setId(name);
             butt0.setStyle("");
             butt0.setMaxSize(120, 120);
@@ -52,10 +74,7 @@ public class Controller implements Initializable {
                     Date date = new Date();
                     String timestamp = formatter.format(date);
 
-
-                    System.out.println(timestamp);
-
-                    TextInputDialog taskDescription = new TextInputDialog("Start");
+                    TextInputDialog taskDescription = new TextInputDialog("...");
                     taskDescription.setHeaderText("Enter Task Action.");
                     taskDescription.setHeight(200);
                     taskDescription.setWidth(250);
@@ -64,6 +83,7 @@ public class Controller implements Initializable {
                     taskDescription.setY(500);
                     taskDescription.showAndWait();
                     String taskDesc = taskDescription.getResult();
+
 
                     TextInputDialog time = new TextInputDialog(timestamp);
                     time.setHeaderText("Enter TimeStamp.");
@@ -78,6 +98,14 @@ public class Controller implements Initializable {
                     String rowEntry = butt0.getText() + ": " + officialTime + ": " + taskDesc;
                     ObservableList<String> items = listView1 != null ? listView1.getItems() : null;
                     items.add(rowEntry);
+
+                    if(butt0.getText().startsWith("Start")){
+                        butt0.setText("End: " +name);
+                        butt0.setStyle("-fx-background-color: #7fdbca");
+                    }else if (butt0.getText().startsWith("End")){
+                        butt0.setText("Start: " +name);
+                        butt0.setStyle("-fx-background-color: #0b253a");
+                    }
 
 
                 }
@@ -106,6 +134,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         createNewButt.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -124,6 +153,21 @@ public class Controller implements Initializable {
 
             }
         });
+
+        exportButt.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    exportFile();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }
+
+
 
 }
